@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16
+    container_name: job-tracker-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: gideon
+      POSTGRES_PASSWORD: localdev
+      POSTGRES_DB: job_tracker
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
