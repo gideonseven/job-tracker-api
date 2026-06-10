@@ -11,8 +11,8 @@ export async function listApplications(
     const {status, company} = req.query;
 
     // Pagination — default to page 1, 10 items per page
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
+    const page = parseInt(req.query["page"] as string) || 1;
+    const limit = parseInt(req.query["limit"] as string) || 10;
     const offset = (page - 1) * limit; // page 1 = skip 0, page 2 = skip 10
 
     // Build filter conditions
@@ -47,7 +47,7 @@ export async function getApplication(
     req: Request,
     res: Response,
 ): Promise<void> {
-    const id = parseInt(req.params.id); // route params are strings, convert to number
+    const id = parseInt(req.params["id"] as string); // route params are strings, convert to number
     const result = await db
         .select()
         .from(applications)
@@ -88,7 +88,7 @@ export async function updateApplication(
     req: Request,
     res: Response,
 ): Promise<void> {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params["id"] as string);
 
     // .set(req.body) updates only the fields the client sent
     // .returning() gives back the updated row, or empty array if id not found
@@ -111,7 +111,7 @@ export async function deleteApplication(
     req: Request,
     res: Response,
 ): Promise<void> {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params["id"] as string);
 
     // .returning() tells us if a row was actually deleted
     const result = await db

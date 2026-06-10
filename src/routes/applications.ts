@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { asyncWrapper } from "../middleware/errorHandler.js";
+
 import {
     listApplications,
     getApplication,
@@ -8,10 +10,9 @@ import {
 } from "../controllers/application.js";
 
 const router = Router();
-router.get("/", listApplications);
-router.get("/:id", getApplication);
-router.post("/", createApplication);
-router.put("/:id", updateApplication);
-router.delete("/:id", deleteApplication);
-
+router.get("/", asyncWrapper(listApplications));
+router.get("/:id", asyncWrapper(getApplication));
+router.post("/", asyncWrapper(createApplication));
+router.put("/:id", asyncWrapper(updateApplication));
+router.delete("/:id", asyncWrapper(deleteApplication));
 export default router;
