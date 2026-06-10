@@ -3,7 +3,7 @@ services:
     image: postgres:16
     container_name: job-tracker-db
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_USER: gideon
       POSTGRES_PASSWORD: localdev
