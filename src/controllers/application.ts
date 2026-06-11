@@ -33,7 +33,7 @@ export async function listApplications(
         .orderBy(applications.id) // consistent ordering — newest last
         .limit(limit)
         .offset(offset);
-
+gi
     res.json({
         data: result,
         page,
