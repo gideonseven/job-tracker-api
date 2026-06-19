@@ -4,47 +4,47 @@ import {db } from "../db/index.js";
 import {users} from "../db/schema.js";
 import { eq } from "drizzle-orm";
 import jwt from "jsonwebtoken";
+import { signupSchema, loginSchema } from "../schemas/auth.js";
 
-export async function signup(req: Request, res: Response): Promise<void>{
-    const{ email, password } = req.body;
+export async function signup(req: Request, res: Response): Promise<void> {
+  // Validate input
+ const parsed = signupSchema.safeParse(req.body);
+if (!parsed.success) {
+  res.status(400).json({ error: "Invalid input" });
+  return;
+}
 
-   // Basic validation
-  if (!email || !password) {
-    res.status(400).json({ error: "Email and password are required" });
-    return;
-  }
+  const { email, password } = parsed.data;
 
-   // Check if user already exists
+  // Check if user already exists
   const existing = await db.select().from(users).where(eq(users.email, email));
   if (existing.length > 0) {
     res.status(409).json({ error: "Email already registered" });
     return;
   }
 
-  // Hash password — 10 salt rounds
+  // Hash password and create user
   const hashedPassword = await bcrypt.hash(password, 10);
-
-  // Insert user with hashed password
   const result = await db.insert(users).values({
     email,
     password: hashedPassword,
   }).returning();
 
-    // Return user without password
   const user = result[0]!;
   res.status(201).json({ id: user.id, email: user.email });
 }
 
 export async function login(req: Request, res: Response): Promise<void> {
-  const { email, password } = req.body;
-
-  // Validation
-  if (!email || !password) {
-    res.status(400).json({ error: "Email and password are required" });
+  // Validate input
+  const parsed = loginSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.errors[0]?.message || "Invalid input" });
     return;
   }
 
-  // Find user by email
+  const { email, password } = parsed.data;
+
+  // Find user
   const result = await db.select().from(users).where(eq(users.email, email));
   if (result.length === 0) {
     res.status(401).json({ error: "Invalid email or password" });
@@ -53,14 +53,14 @@ export async function login(req: Request, res: Response): Promise<void> {
 
   const user = result[0]!;
 
-  // Verify password against hash
+  // Verify password
   const valid = await bcrypt.compare(password, user.password);
   if (!valid) {
     res.status(401).json({ error: "Invalid email or password" });
     return;
   }
 
-  // Create JWT token
+  // Create token
   const token = jwt.sign(
     { userId: user.id, email: user.email },
     process.env["JWT_SECRET"]!,
