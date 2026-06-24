@@ -8,7 +8,13 @@ import { authenticate } from "./middleware/auth.js";
 
 const app = express(); //creates an app instance
 app.use(express.json()); // middleware that parses JSON request bodies.
-app.use(cors());
+
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
 app.use(morgan("dev")); // middleware that logs HTTP requests in development format
 
 app.get("/health", (_req, res) => {
