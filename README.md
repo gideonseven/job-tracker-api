@@ -22,6 +22,7 @@ development.
 - Filtering by status and company, pagination
 - Input validation on every endpoint with zod
 - Centralized error handling middleware
+- Per-user data isolation — applications are scoped to the authenticated user via a foreign key; users cannot view, edit, or delete other users' data
 
 ## API Endpoints
 
