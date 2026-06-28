@@ -38,24 +38,30 @@ development.
 | GET | `/health` | No | Health check |
 
 ## Local Setup
-
-\`\`\`bash
+```
 git clone https://github.com/gideonseven/job-tracker-api.git
 cd job-tracker-api
 npm install
+```
 
 # Create .env from the example
+```
 cp .env.example .env
+```
 
 # Start PostgreSQL
+```
 docker compose up -d
+```
 
 # Create tables
+```
 npm run db:push
-
+```
 # Start dev server
+```
 npm run dev
-\`\`\`
+```
 
 ## Environment Variables
 
