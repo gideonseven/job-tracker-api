@@ -38,7 +38,8 @@ export async function login(req: Request, res: Response): Promise<void> {
   // Validate input
   const parsed = loginSchema.safeParse(req.body);
   if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.errors[0]?.message || "Invalid input" });
+    res.status(400).json({ error: parsed.error.issues[0]?.message
+ || "Invalid input" });
     return;
   }
 
